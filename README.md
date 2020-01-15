@@ -6,7 +6,10 @@ Practice [Rust](https://www.rust-lang.org/) by writing a [tetris](https://en.wik
 ## Dev
 
 ```
-nix-shell -p rustup
+nix-shell -p rustup sdl2
+
+# play
+[nix-shell]$ cargo build && ./target/debug/tetris
 
 # testing
 [nix-shell]$ cargo test
