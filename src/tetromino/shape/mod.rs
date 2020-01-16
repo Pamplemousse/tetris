@@ -3,97 +3,44 @@ use sdl2::pixels::Color as SDL2Color;
 use sdl2::rect::Rect;
 use sdl2::video::Window;
 
-use crate::position::Position;
+mod atom;
 
-static ATOM_SIZE :i32 = 30;
+use crate::position::Position;
+use atom::Atom;
+use atom::ATOM_SIZE;
+
+
+static MARGIN_SIZE :u32 = 1;
 
 #[derive(Clone)]
 pub enum Shape {
     I, J, L, O, S, T, Z
 }
 
-
-fn draw_I_on(canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
-    let atom_size = 30;
-
-    canvas.set_draw_color(color);
-    canvas.fill_rect(Rect::new(position.x, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + ATOM_SIZE + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + 2*(ATOM_SIZE + 1), atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + 3*(ATOM_SIZE + 1), atom_size, atom_size));
-}
-
-fn draw_J_on(canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
-    let atom_size = 30;
-
-    canvas.set_draw_color(color);
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + (atom_size as i32) + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + 2*((atom_size as i32) + 1), atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + 2*(ATOM_SIZE + 1), atom_size, atom_size));
-}
-
-fn draw_L_on(canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
-    let atom_size = 30;
-
-    canvas.set_draw_color(color);
-    canvas.fill_rect(Rect::new(position.x, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + ATOM_SIZE + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + 2*(ATOM_SIZE + 1), atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + 2*((atom_size as i32) + 1), atom_size, atom_size));
-}
-
-fn draw_O_on(canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
-    let atom_size = 30;
-
-    canvas.set_draw_color(color);
-    canvas.fill_rect(Rect::new(position.x, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + ATOM_SIZE + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + (atom_size as i32) + 1, atom_size, atom_size));
-}
-
-fn draw_S_on(canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
-    let atom_size = 30;
-
-    canvas.set_draw_color(color);
-    canvas.fill_rect(Rect::new(position.x, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + ATOM_SIZE + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + (atom_size as i32) + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + 2*((atom_size as i32) + 1), atom_size, atom_size));
-}
-
-fn draw_T_on(canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
-    let atom_size = 30;
-
-    canvas.set_draw_color(color);
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + ATOM_SIZE + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + (atom_size as i32) + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + 2 * (ATOM_SIZE + 1), position.y + (atom_size as i32) + 1, atom_size, atom_size));
-}
-
-fn draw_Z_on(canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
-    let atom_size = 30;
-
-    canvas.set_draw_color(color);
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + ATOM_SIZE + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x + ATOM_SIZE + 1, position.y + (atom_size as i32) + 1, atom_size, atom_size));
-    canvas.fill_rect(Rect::new(position.x, position.y + 2*(ATOM_SIZE + 1), atom_size, atom_size));
-}
-
 impl Shape {
-    pub fn draw_on(&self, canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
+    pub fn atoms(&self) -> [Atom; 4] {
+        let size_taken = (ATOM_SIZE + MARGIN_SIZE) as i32;
+
         match self {
-            Shape::I => draw_I_on(canvas, position, color),
-            Shape::J => draw_J_on(canvas, position, color),
-            Shape::L => draw_L_on(canvas, position, color),
-            Shape::O => draw_O_on(canvas, position, color),
-            Shape::S => draw_S_on(canvas, position, color),
-            Shape::T => draw_T_on(canvas, position, color),
-            Shape::Z => draw_Z_on(canvas, position, color),
+            Shape::I => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(0, 3*size_taken) ],
+            Shape::J => [ Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(size_taken, 2*size_taken), Atom::from(0, 2*size_taken) ],
+            Shape::L => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(size_taken, 2*size_taken) ],
+            Shape::O => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken) ],
+            Shape::S => [ Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(0, size_taken), Atom::from(size_taken, size_taken) ],
+            Shape::T => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(size_taken, size_taken) ],
+            Shape::Z => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(2*size_taken, size_taken) ],
+        }
+    }
+
+    pub fn draw_on(&self, canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
+        canvas.set_draw_color(color);
+
+        for atom in self.atoms().iter() {
+            let x = position.x + atom.position.x;
+            let y = position.y + atom.position.y;
+            let square :Rect = Rect::new(x, y, atom.size, atom.size);
+
+            canvas.fill_rect(square);
         }
     }
 }
-
