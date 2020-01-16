@@ -1,7 +1,7 @@
 use crate::position::Position;
 
 
-pub static ATOM_SIZE :u32 = 30;
+pub static ATOM_SIZE :u32 = 20;
 
 pub struct Atom {
     pub position: Position,
