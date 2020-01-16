@@ -21,7 +21,7 @@ impl Tetromino {
     }
 
     pub fn move_down(&mut self) {
-        self.position.y += 1;
+        self.position.y += ATOM_SIZE as i32;
     }
 
     pub fn move_left(&mut self) {

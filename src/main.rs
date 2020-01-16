@@ -3,6 +3,7 @@ extern crate sdl2;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
+use sdl2::TimerSubsystem;
 use std::time::Duration;
 use rand::thread_rng;
 use rand::seq::SliceRandom;
@@ -23,6 +24,7 @@ static WINDOW_HEIGHT :u32 = 22*ATOM_SIZE + MARGIN_SIZE;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
+    let mut timer_subsystem = sdl_context.timer().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
 
     let window = video_subsystem.window("rust-sdl2 demo", WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -32,6 +34,7 @@ pub fn main() {
 
     let mut canvas = window.into_canvas().build().unwrap();
     let mut event_pump = sdl_context.event_pump().unwrap();
+    let mut last_time = timer_subsystem.ticks();
     let mut rng = thread_rng();
 
     canvas.set_draw_color(Color::WHITE.rgb());
@@ -43,6 +46,8 @@ pub fn main() {
     let (x, y) :(i32, i32) = (MARGIN_SIZE as i32, MARGIN_SIZE as i32);
     let shape = shapes.choose(&mut rng).expect("Cannot get something out of `shapes`.");
     let mut current_tetromino :Tetromino = Tetromino::new(x, y, shape.clone());
+
+    let fall_speed = 1.0;
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -64,7 +69,12 @@ pub fn main() {
         canvas.set_draw_color(Color::WHITE.rgb());
         canvas.clear();
 
-        current_tetromino.move_down();
+        let current_time = timer_subsystem.ticks();
+        if current_time > last_time + ((1000.0 / fall_speed) as u32) {
+            current_tetromino.move_down();
+            last_time = current_time;
+        }
+
         current_tetromino.draw_on(&mut canvas);
 
         canvas.present();
