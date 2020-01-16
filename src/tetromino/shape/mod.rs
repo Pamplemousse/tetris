@@ -12,7 +12,7 @@ use crate::position::Position;
 
 
 pub static ATOM_SIZE :u32 = ATOM_CONTENT_SIZE + MARGIN_SIZE;
-static MARGIN_SIZE :u32 = 1;
+pub static MARGIN_SIZE :u32 = 1;
 
 #[derive(Clone)]
 pub enum Shape {

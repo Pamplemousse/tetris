@@ -15,10 +15,11 @@ use color::Color;
 use tetromino::Tetromino;
 use tetromino::shape::Shape;
 use tetromino::shape::ATOM_SIZE;
+use tetromino::shape::MARGIN_SIZE;
 
 
-static WINDOW_WIDTH :u32 = 500;
-static WINDOW_HEIGHT :u32 = 600;
+static WINDOW_WIDTH :u32 = 10*ATOM_SIZE + MARGIN_SIZE;
+static WINDOW_HEIGHT :u32 = 22*ATOM_SIZE + MARGIN_SIZE;
 
 pub fn main() {
     let sdl_context = sdl2::init().unwrap();
@@ -39,8 +40,7 @@ pub fn main() {
 
     let shapes = [ Shape::I, Shape::J, Shape::L, Shape::O, Shape::S, Shape::T, Shape::Z ];
 
-    let x :i32 = 0;
-    let y :i32 = 0;
+    let (x, y) :(i32, i32) = (MARGIN_SIZE as i32, MARGIN_SIZE as i32);
     let shape = shapes.choose(&mut rng).expect("Cannot get something out of `shapes`.");
     let mut current_tetromino :Tetromino = Tetromino::new(x, y, shape.clone());
 
