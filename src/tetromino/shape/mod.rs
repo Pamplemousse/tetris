@@ -3,7 +3,7 @@ use sdl2::pixels::Color as SDL2Color;
 use sdl2::rect::Rect;
 use sdl2::video::Window;
 
-mod atom;
+pub mod atom;
 
 use atom::Atom;
 use atom::ATOM_SIZE;

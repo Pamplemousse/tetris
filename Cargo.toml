@@ -5,4 +5,5 @@ authors = ["Pamplemousse <xav.maso@gmail.com>"]
 edition = "2018"
 
 [dependencies]
+rand = "*"
 sdl2 = "0.32.2"
