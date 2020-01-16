@@ -3,14 +3,15 @@ use sdl2::pixels::Color as SDL2Color;
 use sdl2::rect::Rect;
 use sdl2::video::Window;
 
-pub mod atom;
+mod atom;
 
 use atom::Atom;
-use atom::ATOM_SIZE;
+use atom::ATOM_SIZE as ATOM_CONTENT_SIZE;
 use crate::color::Color;
 use crate::position::Position;
 
 
+pub static ATOM_SIZE :u32 = ATOM_CONTENT_SIZE + MARGIN_SIZE;
 static MARGIN_SIZE :u32 = 1;
 
 #[derive(Clone)]
@@ -20,7 +21,7 @@ pub enum Shape {
 
 impl Shape {
     pub fn atoms(&self) -> [Atom; 4] {
-        let size_taken = (ATOM_SIZE + MARGIN_SIZE) as i32;
+        let size_taken = ATOM_SIZE as i32;
 
         match self {
             Shape::I => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(0, 3*size_taken) ],

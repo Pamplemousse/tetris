@@ -14,7 +14,7 @@ mod tetromino;
 use color::Color;
 use tetromino::Tetromino;
 use tetromino::shape::Shape;
-use tetromino::shape::atom::ATOM_SIZE;
+use tetromino::shape::ATOM_SIZE;
 
 
 static WINDOW_WIDTH :u32 = 500;
@@ -50,6 +50,12 @@ pub fn main() {
                 Event::Quit {..} |
                 Event::KeyDown { keycode: Some(Keycode::Escape), .. } => {
                     break 'running
+                },
+                Event::KeyDown { keycode: Some(Keycode::Right), .. } | Event::KeyDown { keycode: Some(Keycode::R), .. } => {
+                    current_tetromino.move_right();
+                },
+                Event::KeyDown { keycode: Some(Keycode::Left), .. } | Event::KeyDown { keycode: Some(Keycode::C), .. } => {
+                    current_tetromino.move_left();
                 },
                 _ => {}
             }

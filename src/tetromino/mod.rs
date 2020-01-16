@@ -4,6 +4,9 @@ use sdl2::video::Window;
 use crate::position::Position;
 
 pub mod shape;
+
+use crate::WINDOW_WIDTH;
+use shape::ATOM_SIZE;
 use shape::Shape;
 
 
@@ -19,6 +22,14 @@ impl Tetromino {
 
     pub fn move_down(&mut self) {
         self.position.y += 1;
+    }
+
+    pub fn move_left(&mut self) {
+        self.position.x -= ATOM_SIZE as i32;
+    }
+
+    pub fn move_right(&mut self) {
+        self.position.x += ATOM_SIZE as i32;
     }
 
     pub fn new(x :i32, y :i32, shape :Shape) -> Tetromino {
