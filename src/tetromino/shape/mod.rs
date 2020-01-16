@@ -5,9 +5,10 @@ use sdl2::video::Window;
 
 mod atom;
 
-use crate::position::Position;
 use atom::Atom;
 use atom::ATOM_SIZE;
+use crate::color::Color;
+use crate::position::Position;
 
 
 static MARGIN_SIZE :u32 = 1;
@@ -32,6 +33,18 @@ impl Shape {
         }
     }
 
+    pub fn color(&self) -> Color {
+        match self {
+            Shape::I => Color::TEAL,
+            Shape::J => Color::BLUE,
+            Shape::L => Color::ORANGE,
+            Shape::O => Color::YELLOW,
+            Shape::S => Color::GREEN,
+            Shape::T => Color::PINK,
+            Shape::Z => Color::RED,
+        }
+    }
+
     pub fn draw_on(&self, canvas :&mut Canvas<Window>, position :Position, color :SDL2Color) {
         canvas.set_draw_color(color);
 
@@ -42,5 +55,40 @@ impl Shape {
 
             canvas.fill_rect(square);
         }
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn each_shape_has_its_own_color() {
+        let result: Vec<Color> = [
+            Shape::I,
+            Shape::J,
+            Shape::L,
+            Shape::O,
+            Shape::S,
+            Shape::T,
+            Shape::Z
+        ]
+            .iter()
+            .cloned()
+            .map(|shape| shape.color())
+            .collect();
+
+        let expected_result: Vec<Color> = [
+            Color::TEAL,
+            Color::BLUE,
+            Color::ORANGE,
+            Color::YELLOW,
+            Color::GREEN,
+            Color::PINK,
+            Color::RED
+        ].to_vec();
+
+        assert_eq!(result, expected_result);
     }
 }
