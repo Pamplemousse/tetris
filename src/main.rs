@@ -28,6 +28,17 @@ pub fn main() {
     canvas.clear();
     canvas.present();
     let mut event_pump = sdl_context.event_pump().unwrap();
+
+    // Examples of tetrominos on the screen
+    let shapes = [ Shape::I, Shape::J, Shape::L, Shape::O, Shape::S, Shape::T, Shape::Z ];
+    let tetrominos = shapes.iter().enumerate()
+        .map(|(i, shape)| (10 + (i as i32)*100, 10, shape))
+        .map(|(x, y, shape)| Tetromino::new(x, y, shape.clone()));
+
+    for tetromino in tetrominos {
+        tetromino.draw_on(&mut canvas);
+    }
+
     'running: loop {
         for event in event_pump.poll_iter() {
             match event {
@@ -39,33 +50,6 @@ pub fn main() {
             }
         }
 
-        // Shape: I
-        let tetromino_i = Tetromino::new(10, 10, Shape::I);
-        tetromino_i.draw_on(&mut canvas);
-
-        // Shape: J
-        let tetromino_j = Tetromino::new(100, 10, Shape::J);
-        tetromino_j.draw_on(&mut canvas);
-
-        // Shape: L
-        let tetromino_l = Tetromino::new(200, 10, Shape::L);
-        tetromino_l.draw_on(&mut canvas);
-
-        // Shape: O
-        let tetromino_o = Tetromino::new(300, 10, Shape::O);
-        tetromino_o.draw_on(&mut canvas);
-
-        // Shape: S
-        let tetromino_s = Tetromino::new(400, 10, Shape::S);
-        tetromino_s.draw_on(&mut canvas);
-
-        // Shape: T
-        let tetromino_t = Tetromino::new(500, 10, Shape::T);
-        tetromino_t.draw_on(&mut canvas);
-
-        // Shape: Z
-        let tetromino_z = Tetromino::new(600, 10, Shape::Z);
-        tetromino_z.draw_on(&mut canvas);
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
