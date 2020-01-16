@@ -2,16 +2,11 @@ use sdl2::render::Canvas;
 use sdl2::video::Window;
 
 use crate::color::Color;
+use crate::position::Position;
 
 pub mod shape;
 use shape::Shape;
 
-
-#[derive(Clone, Copy)]
-pub struct Position {
-    x: i32,
-    y: i32,
-}
 
 pub struct Tetromino {
     shape: Shape,

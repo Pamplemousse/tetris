@@ -3,7 +3,7 @@ use sdl2::pixels::Color as SDL2Color;
 use sdl2::rect::Rect;
 use sdl2::video::Window;
 
-use crate::tetromino::Position;
+use crate::position::Position;
 
 static ATOM_SIZE :i32 = 30;
 

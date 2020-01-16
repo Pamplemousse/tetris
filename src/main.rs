@@ -5,6 +5,7 @@ use sdl2::keyboard::Keycode;
 use std::time::Duration;
 
 mod color;
+mod position;
 mod tetromino;
 
 use color::Color;
