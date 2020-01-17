@@ -1,3 +1,6 @@
+extern crate arraymap;
+
+use arraymap::ArrayMap;
 use sdl2::render::Canvas;
 use sdl2::pixels::Color as SDL2Color;
 use sdl2::rect::Rect;
@@ -20,17 +23,21 @@ pub struct Tetromino {
 }
 
 fn init_atoms(shape :Shape) -> [Atom; 4] {
-    let size_taken = ATOM_SIZE as i32;
+    let size = ATOM_SIZE as i32;
 
-    match shape {
-        Shape::I => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(0, 3*size_taken) ],
-        Shape::J => [ Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(size_taken, 2*size_taken), Atom::from(0, 2*size_taken) ],
-        Shape::L => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(size_taken, 2*size_taken) ],
-        Shape::O => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken) ],
-        Shape::S => [ Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(0, size_taken), Atom::from(size_taken, size_taken) ],
-        Shape::T => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(size_taken, size_taken) ],
-        Shape::Z => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(2*size_taken, size_taken) ],
-    }
+    let coordinates :[(i32, i32); 4] = match shape {
+        Shape::I => [ (0, 0), (0, 1), (0, 2), (0, 3) ],
+        Shape::J => [ (1, 0), (1, 1), (1, 2), (0, 2) ],
+        Shape::L => [ (0, 0), (0, 1), (0, 2), (1, 2) ],
+        Shape::O => [ (0, 0), (0, 1), (1, 0), (1, 1) ],
+        Shape::S => [ (1, 0), (2, 0), (0, 1), (1, 1) ],
+        Shape::T => [ (0, 0), (1, 0), (2, 0), (1, 1) ],
+        Shape::Z => [ (0, 0), (1, 0), (1, 1), (2, 1) ],
+    };
+
+    coordinates
+        .map(|(x, y)| ((*x) * size, (*y) * size))
+        .map(|(x, y)| Atom::from(*x, *y))
 }
 
 
