@@ -90,12 +90,14 @@ impl Tetromino {
     }
 
     fn width(&self) -> u32 {
-        let width_in_number_of_atoms = match self.shape {
-            Shape::O => 2,
-            Shape::J | Shape::L | Shape::S | Shape::T | Shape::Z => 3,
-            Shape::I => 4,
-        };
+        let mut x_coordinates :Vec<i32> = self.atoms
+            .iter()
+            .map(|atom| atom.position.x)
+            .collect();
 
-        width_in_number_of_atoms * ATOM_SIZE
+        x_coordinates.sort();
+        x_coordinates.dedup();
+
+        x_coordinates.len() as u32 * ATOM_SIZE
     }
 }
