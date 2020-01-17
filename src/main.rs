@@ -3,7 +3,6 @@ extern crate sdl2;
 
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
-use sdl2::TimerSubsystem;
 use std::time::Duration;
 use rand::thread_rng;
 use rand::seq::SliceRandom;

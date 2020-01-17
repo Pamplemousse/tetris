@@ -2,7 +2,6 @@ extern crate arraymap;
 
 use arraymap::ArrayMap;
 use sdl2::render::Canvas;
-use sdl2::pixels::Color as SDL2Color;
 use sdl2::rect::Rect;
 use sdl2::video::Window;
 

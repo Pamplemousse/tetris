@@ -2,7 +2,6 @@ pub mod atom;
 
 use atom::ATOM_SIZE as ATOM_CONTENT_SIZE;
 use crate::color::Color;
-use crate::position::Position;
 
 
 pub static ATOM_SIZE :u32 = ATOM_CONTENT_SIZE + MARGIN_SIZE;
