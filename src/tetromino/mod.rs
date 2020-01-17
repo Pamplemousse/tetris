@@ -16,27 +16,29 @@ use shape::atom::Atom;
 pub struct Tetromino {
     shape: Shape,
     pub position: Position,
+    atoms: [Atom; 4],
 }
 
-impl Tetromino {
-    pub fn atoms(&self) -> [Atom; 4] {
-        let size_taken = ATOM_SIZE as i32;
+fn init_atoms(shape :Shape) -> [Atom; 4] {
+    let size_taken = ATOM_SIZE as i32;
 
-        match self.shape {
-            Shape::I => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(0, 3*size_taken) ],
-            Shape::J => [ Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(size_taken, 2*size_taken), Atom::from(0, 2*size_taken) ],
-            Shape::L => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(size_taken, 2*size_taken) ],
-            Shape::O => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken) ],
-            Shape::S => [ Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(0, size_taken), Atom::from(size_taken, size_taken) ],
-            Shape::T => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(size_taken, size_taken) ],
-            Shape::Z => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(2*size_taken, size_taken) ],
-        }
+    match shape {
+        Shape::I => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(0, 3*size_taken) ],
+        Shape::J => [ Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(size_taken, 2*size_taken), Atom::from(0, 2*size_taken) ],
+        Shape::L => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(0, 2*size_taken), Atom::from(size_taken, 2*size_taken) ],
+        Shape::O => [ Atom::from(0, 0), Atom::from(0, size_taken), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken) ],
+        Shape::S => [ Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(0, size_taken), Atom::from(size_taken, size_taken) ],
+        Shape::T => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(2*size_taken, 0), Atom::from(size_taken, size_taken) ],
+        Shape::Z => [ Atom::from(0, 0), Atom::from(size_taken, 0), Atom::from(size_taken, size_taken), Atom::from(2*size_taken, size_taken) ],
     }
+}
 
+
+impl Tetromino {
     pub fn draw_on(&self, canvas :&mut Canvas<Window>) {
         canvas.set_draw_color(self.shape.color().rgb());
 
-        for atom in self.atoms().iter() {
+        for atom in self.atoms.iter() {
             let x = self.position.x + atom.position.x;
             let y = self.position.y + atom.position.y;
             let square :Rect = Rect::new(x, y, atom.size, atom.size);
@@ -66,8 +68,10 @@ impl Tetromino {
     }
 
     pub fn new(x :i32, y :i32, shape :Shape) -> Tetromino {
+        let atoms = init_atoms(shape.clone());
         let position = Position { x, y };
-        Tetromino { shape, position }
+
+        Tetromino { shape, position, atoms }
     }
 
     fn width(&self) -> u32 {
