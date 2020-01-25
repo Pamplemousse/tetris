@@ -9,9 +9,8 @@ pub struct Atom {
 }
 
 impl Atom {
-    pub fn from(x :i32, y :i32) -> Atom {
+    pub fn from(position :Position) -> Atom {
         let size = ATOM_SIZE;
-        let position = Position { x, y };
 
         Atom { position, size }
     }

@@ -41,7 +41,8 @@ fn init_atoms(shape :Shape) -> [Atom; 4] {
 
     coordinates
         .map(|(x, y)| ((*x) * size, (*y) * size))
-        .map(|(x, y)| Atom::from(*x, *y))
+        .map(|coordinates| Position::from(*coordinates))
+        .map(|position| Atom::from(*position))
 }
 
 
@@ -82,9 +83,8 @@ impl Tetromino {
         }
     }
 
-    pub fn new(x :i32, y :i32, shape :Shape) -> Tetromino {
+    pub fn new(position :Position, shape :Shape) -> Tetromino {
         let atoms = init_atoms(shape.clone());
-        let position = Position { x, y };
 
         Tetromino { shape, position, atoms }
     }

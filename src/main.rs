@@ -12,6 +12,7 @@ mod position;
 mod tetromino;
 
 use color::Color;
+use position::Position;
 use tetromino::Tetromino;
 use tetromino::shape::Shape;
 use tetromino::shape::ATOM_SIZE;
@@ -42,9 +43,9 @@ pub fn main() {
 
     let shapes = [ Shape::I, Shape::J, Shape::L, Shape::O, Shape::S, Shape::T, Shape::Z ];
 
-    let (x, y) :(i32, i32) = (MARGIN_SIZE as i32, MARGIN_SIZE as i32);
     let shape = shapes.choose(&mut rng).expect("Cannot get something out of `shapes`.");
-    let mut current_tetromino :Tetromino = Tetromino::new(x, y, shape.clone());
+    let new_tetromino_position :Position = Position::from((MARGIN_SIZE as i32, MARGIN_SIZE as i32));
+    let mut current_tetromino :Tetromino = Tetromino::new(new_tetromino_position, shape.clone());
 
     let fall_speed = 1.0;
 
