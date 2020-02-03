@@ -1,10 +1,14 @@
 with import <nixpkgs> { };
 
-stdenv.mkDerivation rec {
-  name = "tetris";
-
-  buildInputs = [
-    rustup
-    SDL2
-  ];
-}
+let
+  moz_overlay = import (builtins.fetchTarball https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz);
+  nixpkgs = import <nixpkgs> { overlays = [ moz_overlay ]; };
+in
+  with nixpkgs;
+  stdenv.mkDerivation {
+    name = "tetris";
+    buildInputs = [
+      nixpkgs.latest.rustChannels.nightly.rust
+      SDL2
+    ];
+  }
