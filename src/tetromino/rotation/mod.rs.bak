@@ -1,0 +1,92 @@
+use std::iter::Cycle;
+use std::slice::Iter;
+
+use arraymap::ArrayMap;
+
+use crate::position::Position;
+use super::shape::Shape;
+
+
+lazy_static! {
+    static ref ROTATIONS_ITERATORS: [RotationsForShape; 7] = generate_rotations_iterators();
+}
+
+pub type RotationsForShape = Cycle<arrayvec::IntoIter<[[Position; 4]; 4]>>;
+
+pub fn generate_rotations_iterators() -> [RotationsForShape; 7] {
+    // Coordinates are computed in the boxes containing the shapes, following:
+    // (-2, -2) (-1, -2) (0, -2) (1, -2)
+    // (-2, -1) (-1, -1) (0, -1) (1, -1)
+    // (-2,  0)  (-1,  0) (0,  0) (1,  0)
+    // (-2,  1)  (-1,  1) (0,  1) (1,  1)
+
+    let rotations :[[[(i32, i32); 4]; 4]; 7] = [
+        [   // I
+            [ (-2, -1), (-1, -1), (0, -1), (1, -1) ],
+            [ (0, -2), (0, -1), (0, 0), (0, 1) ],
+            [ (-2, 0), (-1, 0), (0, 0), (1, 0) ],
+            [ (-1, -2), (-1, -1), (-1, 0), (-1, 1) ],
+        ],
+        [   // J
+            [ (-2, -2), (-2, -1), (-1, -1), (0, -1) ],
+            [ (-1, -2), (-1, -1), (-1, 0), (0, -2) ],
+            [ (0, -2), (0, -1), (0, 0), (0, 1) ],
+            [ (-1, -2), (-1, -1), (-1, 0), (-2, 0) ],
+        ],
+        [   // L
+            [ (-2, -1), (-1, -1), (0, -1), (-2, 0) ],
+            [ (-1, -2), (-1, -1), (-1, 0), (0, 0) ],
+            [ (0, -2), (0, -1), (0, 0), (-2, 1) ],
+            [ (-1, -2), (-1, -1), (-1, 0), (-2, -2) ],
+        ],
+        [   // O
+            [ (-1, -1), (-1, 0), (0, -1), (0, 0) ],
+            [ (-1, -1), (-1, 0), (0, -1), (0, 0) ],
+            [ (-1, -1), (-1, 0), (0, -1), (0, 0) ],
+            [ (-1, -1), (-1, 0), (0, -1), (0, 0) ],
+        ],
+        [   // S
+            [ (-2, -1), (-1, -1), (-1, -2), (0, -2) ],
+            [ (-1, -2), (-1, -1), (0, -1), (0, 0) ],
+            [ (-2, 0), (-1, 0), (-1, -1), (0, -1) ],
+            [ (-2, -2), (-2, -1), (-1, -1), (0, -1) ],
+        ],
+        [   // T
+            [ (-2, -1), (-1, -1), (0, -1), (-1, -2) ],
+            [ (-1, -2), (-1, -1), (-1, 0), (0, -1) ],
+            [ (-2, -1), (-1, -1), (-1, 0), (-1, 0) ],
+            [ (-1, -2), (-1, -1), (-1, 0), (-2, -1) ],
+        ],
+        [   // Z
+            [ (-2, -2), (-1, -2), (-1, -1), (0, -1) ],
+            [ (0, -2), (0, -1), (-1, -1), (-1, 0) ],
+            [ (-2, -1), (-1, -1), (-1, 0), (0, 0) ],
+            [ (-2, 0), (-2, -1), (-1, -1), (-1, -2) ],
+        ],
+    ];
+
+    let result :[RotationsForShape; 7] = rotations
+        .map(|rotations_for_shape| {
+            rotations_for_shape.map(|atoms_coordinates| atoms_coordinates.map(|coordinates| Position::from(*coordinates)))
+        })
+        .map(|rotations_for_shape| {
+            let rotations = arrayvec::ArrayVec::from(*rotations_for_shape);
+            rotations.into_iter().cycle()
+        });
+
+    result
+}
+
+pub fn rotations_for_shape(shape :Shape) -> &'static RotationsForShape {
+    let index = match shape {
+        Shape::I => 0,
+        Shape::J => 1,
+        Shape::L => 2,
+        Shape::O => 3,
+        Shape::S => 4,
+        Shape::T => 5,
+        Shape::Z => 6,
+    };
+
+    ROTATIONS_ITERATORS[index]
+}

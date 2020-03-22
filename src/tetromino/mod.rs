@@ -5,46 +5,31 @@ use sdl2::render::Canvas;
 use sdl2::rect::Rect;
 use sdl2::video::Window;
 
-use crate::position::Position;
-
+mod rotation;
 pub mod shape;
 
 use crate::WINDOW_WIDTH;
+use crate::position::Position;
+use rotation::new_rotations_for_shape;
+use rotation::AtomsPositions;
+use rotation::RotationCycleForShape;
 use shape::ATOM_SIZE;
 use shape::Shape;
 use shape::atom::Atom;
 
 
-pub struct Tetromino {
-    shape: Shape,
-    pub position: Position,
-    atoms: [Atom; 4],
-}
-
-fn init_atoms(shape :Shape) -> [Atom; 4] {
-    let size = ATOM_SIZE as i32;
-
-    // Coordinates are computed in the boxes containing the shapes, following:
-    // (-2, -2) (-1, -2) (0, -2) (1, -2)
-    // (-2, -1) (-1, -1) (0, -1) (1, -1)
-    // (-2,  0) (-1,  0) (0,  0) (1,  0)
-    // (-2,  1) (-1,  1) (0,  1) (1,  1)
-    let coordinates :[(i32, i32); 4] = match shape {
-        Shape::I => [ (-2, -1), (-1, -1), (0, -1), (1, -1) ],
-        Shape::J => [ (-2, -2), (-2, -1), (-1, -1), (0, -1) ],
-        Shape::L => [ (-2, -1), (-1, -1), (0, -1), (-2, 0) ],
-        Shape::O => [ (-1, -1), (-1, 0), (0, -1), (0, 0) ],
-        Shape::S => [ (-2, -1), (-1, -1), (-1, -2), (0, -2) ],
-        Shape::T => [ (-2, -1), (-1, -1), (0, -1), (-1, -2) ],
-        Shape::Z => [ (-2, -2), (-1, -2), (-1, -1), (0, -1) ],
-    };
-
-    coordinates
-        .map(|(x, y)| ((*x) * size, (*y) * size))
-        .map(|coordinates| Position::from(*coordinates))
+fn atoms_from_positions(positions :AtomsPositions) -> [Atom; 4] {
+    positions
         .map(|position| Atom::from(*position))
 }
 
+pub struct Tetromino {
+    atoms: [Atom; 4],
+    // TODO: keep pub?
+    pub position: Position,
+    rotations_iterator: RotationCycleForShape,
+    shape: Shape,
+}
 
 impl Tetromino {
     pub fn draw_on(&self, canvas :&mut Canvas<Window>) {
@@ -54,9 +39,10 @@ impl Tetromino {
 
         for atom in self.atoms.iter() {
             // The "center" of the box containing the shape is 2 units away from the left, and from
-            // the top (see coordinate system above).
+            // the top (see coordinate system in src/tetromino/rotation/mod.rs).
             let x = self.position.x + atom.position.x + 2 * size;
             let y = self.position.y + atom.position.y + 2 * size;
+
             let square :Rect = Rect::new(x, y, atom.size, atom.size);
 
             canvas.fill_rect(square);
@@ -76,6 +62,7 @@ impl Tetromino {
     }
 
     pub fn move_right(&mut self) {
+        // TODO: debug
         let new_x = self.position.x + ATOM_SIZE as i32;
 
         if new_x as u32 + self.width() <= WINDOW_WIDTH {
@@ -84,9 +71,17 @@ impl Tetromino {
     }
 
     pub fn new(position :Position, shape :Shape) -> Tetromino {
-        let atoms = init_atoms(shape.clone());
+        let mut rotations_iterator = new_rotations_for_shape(shape.clone());
+        let atoms = atoms_from_positions(
+            *rotations_iterator.next().unwrap()
+        );
 
-        Tetromino { shape, position, atoms }
+        Tetromino { shape, position, atoms, rotations_iterator }
+    }
+
+    pub fn rotate_clockwise(&mut self) {
+        let atoms_positions = self.rotations_iterator.next().unwrap();
+        self.atoms = atoms_from_positions(*atoms_positions)
     }
 
     fn width(&self) -> u32 {
@@ -97,6 +92,9 @@ impl Tetromino {
 
         x_coordinates.sort();
         x_coordinates.dedup();
+
+        println!("{:?}", x_coordinates[x_coordinates.len() - 1]);
+        println!("{:?}", x_coordinates[0]);
 
         x_coordinates.len() as u32 * ATOM_SIZE
     }

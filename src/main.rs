@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate lazy_static;
 extern crate rand;
 extern crate sdl2;
 
@@ -62,6 +64,12 @@ pub fn main() {
                 Event::KeyDown { keycode: Some(Keycode::Left), .. } | Event::KeyDown { keycode: Some(Keycode::C), .. } => {
                     current_tetromino.move_left();
                 },
+                Event::KeyDown { keycode: Some(Keycode::Up), .. } | Event::KeyDown { keycode: Some(Keycode::S), .. } => {
+                    current_tetromino.rotate_clockwise();
+                },
+                Event::KeyDown { keycode: Some(Keycode::Down), .. } | Event::KeyDown { keycode: Some(Keycode::T), .. } => {
+                    println!("down!")
+                },
                 _ => {}
             }
         }
@@ -76,6 +84,14 @@ pub fn main() {
         }
 
         current_tetromino.draw_on(&mut canvas);
+
+        // TODO:
+        // https://tetris.fandom.com/wiki/SRS
+        //   * spawn in right place
+        //   * collisions
+        //     - bottom
+        //   * (use an underlying grid system - from the bottom, only for the fallen tetriminos?)
+        //   * line disappearance at the bottom
 
         canvas.present();
         ::std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));

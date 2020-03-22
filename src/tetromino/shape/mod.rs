@@ -14,6 +14,18 @@ pub enum Shape {
 
 
 impl Shape {
+    pub fn index(&self) -> usize {
+        match self {
+            Shape::I => 0,
+            Shape::J => 1,
+            Shape::L => 2,
+            Shape::O => 3,
+            Shape::S => 4,
+            Shape::T => 5,
+            Shape::Z => 6,
+        }
+    }
+
     pub fn color(&self) -> Color {
         match self {
             Shape::I => Color::TEAL,

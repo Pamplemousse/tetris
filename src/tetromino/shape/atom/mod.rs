@@ -3,6 +3,7 @@ use crate::position::Position;
 
 pub static ATOM_SIZE :u32 = 20;
 
+#[derive(Debug)]
 pub struct Atom {
     pub position: Position,
     pub size: u32,
